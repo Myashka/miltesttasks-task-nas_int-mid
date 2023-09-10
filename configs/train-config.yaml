@@ -2,9 +2,9 @@ seed: 42
 device: cuda
 epochs: 200
 save_interval: 5
-checkpoint_dir: /content/miltesttasks-task-nas_int-mid/artifacts/train/random_sampler
+checkpoint_dir: /content/miltesttasks-task-nas_int-mid/artifacts/train/random_sampler/train-colab-200_epoches-lr_3_04-random_sampler-16_32_10
 
-run_name: train-colab-200_epoches-lr_3_04-random_sampler-16_32_10
+# run_name: train-colab-200_epoches-lr_3_04-random_sampler-16_32_10
 
 ### DATA ###
 data:

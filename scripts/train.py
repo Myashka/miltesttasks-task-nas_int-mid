@@ -31,7 +31,7 @@ def train(config_file):
     run = wandb.init(
         project="mil-test",
         tags=["trian"],
-        name=config["run_name"],
+        name=config["checkpoint_dir"].split("/")[-1],
         config=config,
     )
     device = torch.device(f"{config['device']}" if torch.cuda.is_available() else "cpu")
@@ -76,6 +76,7 @@ def train(config_file):
                 val_results["val_loss"],
                 best_val_accuracy,
                 config["checkpoint_dir"],
+                config["run_name"],
                 prefix="best",
             )
 
@@ -87,6 +88,7 @@ def train(config_file):
                 val_results["val_loss"],
                 val_results["val_accuracy"],
                 config["checkpoint_dir"],
+                config["run_name"],
             )
     wandb.finish()
 

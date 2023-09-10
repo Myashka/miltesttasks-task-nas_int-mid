@@ -23,7 +23,7 @@ def make_dataloaders(
 
     if do_train:
         mnist_train = MNIST(
-            root=data_dir, train=True, transform=transform, download=True
+            root='.', train=True, transform=transform, download=True
         )
 
         num_train = len(mnist_train)

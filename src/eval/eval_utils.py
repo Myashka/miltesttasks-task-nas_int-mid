@@ -11,7 +11,9 @@ def eval_epoch(model, dataloader, criterion, device, metrics=None, prefix="val")
     total_samples = len(dataloader.dataset)
 
     with torch.no_grad():
-        for data, target in tqdm(dataloader, desc="Evaluating"):
+        for data, target in tqdm(
+            dataloader, position=1, desc="Evaluating", leave=False
+        ):
             data, target = data.to(device), target.to(device)
             logits = model(data)
             loss = criterion(logits, target)

@@ -18,6 +18,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @click.command()
 @click.option("--config-file", default="config.yaml", help="Path to config YAML file")
 def train(config_file):
@@ -49,7 +50,7 @@ def train(config_file):
     )
     logger.info("Starting training...")
     for global_epoch in tqdm(
-        range(last_epoch + 1, config["epochs"] + 1), desc="Epochs"
+        range(last_epoch + 1, config["epochs"] + 1), position=0, desc="Epochs"
     ):
         model.sampler(config.get("sampler_config"))
 

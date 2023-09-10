@@ -1,0 +1,49 @@
+seed: 42
+device: cuda
+epochs: 200
+save_interval: 10
+checkpoint_dir: D:\Machine_learning\miltesttasks-task-nas_int-mid\artifacts\train\random_sampler
+
+run_name: train-test_run
+
+### DATA ###
+data:
+  train_batch_size: 128
+  val_batch_size: 128
+  val_fraction: 0.15
+
+### SAMPLER ###
+sampler_config:
+    random: True
+    fixed_config: null # (2, 2)
+
+### OPTIMIZER ###
+optimizer:
+  name: AdamW
+  params:
+    lr: 3.0e-04
+    weight_decay: 0.01
+
+### MODEL ###
+model_config:
+  checkpoint_path: null
+  init_conv:
+    in_channels: 1
+    out_channels: 16
+
+  variable_block1:
+    in_channels: 16
+    out_channels: 16
+
+  downsample_conv:
+    in_channels: 16
+    out_channels: 32
+    stride: 2
+
+  variable_block2:
+    in_channels: 32
+    out_channels: 32
+
+  fc:
+    in_features: 32
+    out_features: 10

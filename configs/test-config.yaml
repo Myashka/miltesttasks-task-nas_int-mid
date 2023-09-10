@@ -1,0 +1,37 @@
+seed: 42
+device: cuda
+
+run_name: train-test_run
+
+### DATA ###
+data:
+  test_batch_size: 64
+
+### SAMPLER ###
+sampler_config:
+  random: True
+  fixed_config: (2, 2) # только используется, если random: False
+
+### MODEL ###
+model_config:
+  checkpoint_path: null
+  init_conv:
+    in_channels: 1
+    out_channels: 16
+
+  variable_block1:
+    in_channels: 16
+    out_channels: 16
+
+  downsample_conv:
+    in_channels: 16
+    out_channels: 32
+    stride: 2
+
+  variable_block2:
+    in_channels: 32
+    out_channels: 32
+
+  fc:
+    in_features: 32
+    out_features: 10

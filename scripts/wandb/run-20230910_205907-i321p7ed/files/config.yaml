@@ -1,0 +1,82 @@
+wandb_version: 1
+
+seed:
+  desc: null
+  value: 42
+device:
+  desc: null
+  value: cuda
+epochs:
+  desc: null
+  value: 200
+save_interval:
+  desc: null
+  value: 10
+checkpoint_dir:
+  desc: null
+  value: D:\Machine_learning\miltesttasks-task-nas_int-mid\artifacts\train\random_sampler
+run_name:
+  desc: null
+  value: train-test_run
+data:
+  desc: null
+  value:
+    train_batch_size: 128
+    val_batch_size: 128
+    val_fraction: 0.15
+sampler_config:
+  desc: null
+  value:
+    random: true
+    fixed_config: null
+optimizer:
+  desc: null
+  value:
+    name: AdamW
+    params:
+      lr: 0.0003
+      weight_decay: 0.01
+model_config:
+  desc: null
+  value:
+    checkpoint_path: null
+    init_conv:
+      in_channels: 1
+      out_channels: 16
+    variable_block1:
+      in_channels: 16
+      out_channels: 16
+    downsample_conv:
+      in_channels: 16
+      out_channels: 32
+      stride: 2
+    variable_block2:
+      in_channels: 32
+      out_channels: 32
+    fc:
+      in_features: 32
+      out_features: 10
+_wandb:
+  desc: null
+  value:
+    python_version: 3.11.4
+    cli_version: 0.15.10
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1694368747.990484
+    t:
+      1:
+      - 1
+      - 41
+      - 55
+      3:
+      - 13
+      - 15
+      - 16
+      - 23
+      4: 3.11.4
+      5: 0.15.10
+      8:
+      - 3
+      - 5

@@ -13,11 +13,15 @@ import click
 import yaml
 from yaml import CLoader
 import wandb
+import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @click.command()
 @click.option("--config-file", default="config.yaml", help="Path to config YAML file")
 def train(config_file):
+    logger.info("Loading configuration...")
     with open(config_file, "r") as f:
         config = yaml.load(f, Loader=CLoader)
 
@@ -30,6 +34,7 @@ def train(config_file):
         config=config,
     )
     device = torch.device(f"{config['device']}" if torch.cuda.is_available() else "cpu")
+    logger.info(f"Using device: {device}")
 
     criterion = CS_loss()
     metrics = {"accuracy": accuracy}
@@ -42,7 +47,7 @@ def train(config_file):
         val_batch_size=config["data"]["val_batch_size"],
         val_fraction=config["data"]["val_fraction"],
     )
-
+    logger.info("Starting training...")
     for global_epoch in tqdm(
         range(last_epoch + 1, config["epochs"] + 1), desc="Epochs"
     ):

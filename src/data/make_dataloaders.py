@@ -2,8 +2,8 @@ import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader, random_split
 import os
-from dotenv import load_dotenv
-from pathlib import Path
+# from dotenv import load_dotenv
+# from pathlib import Path
 
 
 def make_dataloaders(
@@ -17,9 +17,9 @@ def make_dataloaders(
         [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
     )
 
-    project_root = Path(__file__).resolve().parents[2]
-    load_dotenv(dotenv_path=project_root / ".env")
-    data_dir = os.environ.get("MNIST_DATA_DIR")
+    # project_root = Path(__file__).resolve().parents[2]
+    # load_dotenv(dotenv_path=project_root / ".env")
+    # data_dir = os.environ.get("MNIST_DATA_DIR")
 
     if do_train:
         mnist_train = MNIST(
@@ -41,7 +41,7 @@ def make_dataloaders(
 
     else:
         mnist_test = MNIST(
-            root=data_dir, train=False, transform=transform, download=True
+            root='.', train=False, transform=transform, download=True
         )
 
         test_loader = DataLoader(mnist_test, batch_size=test_batch_size, shuffle=False)

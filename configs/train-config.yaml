@@ -1,15 +1,15 @@
 seed: 42
 device: cuda
 epochs: 200
-save_interval: 10
-checkpoint_dir: D:\Machine_learning\miltesttasks-task-nas_int-mid\artifacts\train\random_sampler
+save_interval: 5
+checkpoint_dir: /content/miltesttasks-task-nas_int-mid/artifacts/train/random_sampler
 
-run_name: train-test_run
+run_name: train-colab-200_epoches-lr_3_04-random_sampler-16_32_10
 
 ### DATA ###
 data:
-  train_batch_size: 128
-  val_batch_size: 128
+  train_batch_size: 2048
+  val_batch_size: 512
   val_fraction: 0.15
 
 ### SAMPLER ###

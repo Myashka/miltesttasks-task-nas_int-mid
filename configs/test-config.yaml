@@ -5,7 +5,7 @@ run_name: train-test_run
 
 ### DATA ###
 data:
-  test_batch_size: 64
+  test_batch_size: 512
 
 ### SAMPLER ###
 sampler_config:

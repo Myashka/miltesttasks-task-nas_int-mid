@@ -1,7 +1,6 @@
 import os
 import torch
-
-import os
+import wandb
 
 
 def save_checkpoint(
@@ -40,5 +39,7 @@ def save_checkpoint(
         },
         checkpoint_path,
     )
+
+    wandb.save(checkpoint_path)
 
     print(f"Checkpoint saved: {checkpoint_path}")

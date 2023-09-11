@@ -36,6 +36,7 @@ def train(config_file):
 
     criterion = CS_loss()
     metrics = {"accuracy": accuracy}
+    sampler_config = config.get("sampler_config")
 
     model, optim, last_epoch, best_val_accuracy = load_model(config, device)
     wandb.watch(model)
@@ -49,18 +50,17 @@ def train(config_file):
     for global_epoch in tqdm(
         range(last_epoch + 1, config["epochs"] + 1), desc="Epochs"
     ):
-        model.sampler(config.get("sampler_config"))
 
         train_results = train_epoch(
-            model, train_loader, optim, criterion, device, metrics
+            model, train_loader, optim, criterion, device, metrics, sampler_config
         )
         train_results["epoch"] = global_epoch
-        train_results["architecture"] = (
-            model.layer_config[0] * 10 + model.layer_config[1]
-        )
+        # train_results["architecture"] = (
+        #     model.layer_config[0] * 10 + model.layer_config[1]
+        # )
         wandb_log(train_results)
 
-        val_results = eval_epoch(model, val_loader, criterion, device, metrics)
+        val_results = eval_epoch(model, val_loader, criterion, device, metrics, sampler_config=sampler_config)
         val_results["epoch"] = global_epoch
         wandb_log(val_results)
 

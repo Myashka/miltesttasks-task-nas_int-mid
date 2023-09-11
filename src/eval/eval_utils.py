@@ -4,7 +4,15 @@ from collections import defaultdict
 from src.metrics.compute_metrics import compute_metrics
 
 
-def eval_epoch(model, dataloader, criterion, device, metrics=None, prefix="val"):
+def eval_epoch(
+    model,
+    dataloader,
+    criterion,
+    device,
+    metrics=None,
+    prefix="val",
+    sampler_config=None,
+):
     model.eval()
     total_loss = 0.0
     metric_results = defaultdict(float)
@@ -14,6 +22,7 @@ def eval_epoch(model, dataloader, criterion, device, metrics=None, prefix="val")
         for data, target in tqdm(
             dataloader, position=1, desc="Evaluating", leave=False
         ):
+            model.sampler(sampler_config)
             data, target = data.to(device), target.to(device)
             logits = model(data)
             loss = criterion(logits, target)

@@ -1,27 +1,26 @@
 seed: 42
 device: cuda
 epochs: 200
-save_interval: 5
-checkpoint_dir: /content/miltesttasks-task-nas_int-mid/artifacts/train/random_sampler/train-colab-200_epoches-lr_3_04-random_sampler-16_32_10
-
-# run_name: train-colab-200_epoches-lr_3_04-random_sampler-16_32_10
+save_interval: 20
+checkpoint_dir: /content/miltesttasks-task-nas_int-mid/artifacts/train/random_sampler/train-colab-200_epoches-bs_8192-AdamW_lr_3_03_w_d_0.01-random_sampler_each_batch-16_32_10
 
 ### DATA ###
 data:
-  train_batch_size: 2048
-  val_batch_size: 512
+  train_batch_size: 8192
+  val_batch_size: 64
   val_fraction: 0.15
 
 ### SAMPLER ###
 sampler_config:
-    random: True
-    fixed_config: null # (2, 2)
+  random: True
+  fixed_config: null # (2, 2)
 
 ### OPTIMIZER ###
 optimizer:
-  name: AdamW
+  name: AdamW # AdamW
   params:
-    lr: 3.0e-04
+    lr: 3.0e-03
+    # momentum: 0.9
     weight_decay: 0.01
 
 ### MODEL ###

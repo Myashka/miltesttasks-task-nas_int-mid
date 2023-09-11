@@ -1,7 +1,7 @@
 from src.data.make_dataloaders import make_dataloaders
 from src.models.load_model import load_model
 from src.train.training_utils import train_epoch
-from src.eval.eval_utils import eval_epoch
+from src.eval.eval_epoch import eval_epoch
 from src.losses.CS_loss import CS_loss
 from src.metrics.accuracy import accuracy
 from src.utils import save_checkpoint, set_random_seed, load_config

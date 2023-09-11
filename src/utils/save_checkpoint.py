@@ -24,7 +24,7 @@ def save_checkpoint(
     )
 
     artifact = wandb.Artifact(
-        name=checkpoint_name,
+        name=checkpoint_dir.split("/")[-1],
         type="model-checkpoint",
         description="Checkpoint of the model at a given epoch",
         metadata={"epoch": epoch, "loss": loss, "accuracy": accuracy},

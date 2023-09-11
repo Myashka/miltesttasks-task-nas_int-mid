@@ -1,17 +1,15 @@
-import torch
 from src.data.make_dataloaders import make_dataloaders
 from src.models.load_model import load_model
 from src.train.training_utils import train_epoch
 from src.eval.eval_utils import eval_epoch
 from src.losses.CS_loss import CS_loss
 from src.metrics.accuracy import accuracy
-from src.utils import save_checkpoint, set_random_seed
+from src.utils import save_checkpoint, set_random_seed, load_config
 from src.logging.wandb_logging import wandb_log
 
+import torch
 from tqdm import tqdm
 import click
-import yaml
-from yaml import CLoader
 import wandb
 import logging
 
@@ -22,9 +20,8 @@ logger = logging.getLogger(__name__)
 @click.command()
 @click.option("--config-file", default="config.yaml", help="Path to config YAML file")
 def train(config_file):
-    logger.info("Loading configuration...")
-    with open(config_file, "r") as f:
-        config = yaml.load(f, Loader=CLoader)
+    logger.info("Loading config")
+    config = load_config(config_file)
 
     set_random_seed(config["seed"])
 
@@ -50,7 +47,7 @@ def train(config_file):
     )
     logger.info("Starting training...")
     for global_epoch in tqdm(
-        range(last_epoch + 1, config["epochs"] + 1), position=0, desc="Epochs"
+        range(last_epoch + 1, config["epochs"] + 1), desc="Epochs"
     ):
         model.sampler(config.get("sampler_config"))
 
@@ -76,7 +73,6 @@ def train(config_file):
                 val_results["val_loss"],
                 best_val_accuracy,
                 config["checkpoint_dir"],
-                config["run_name"],
                 prefix="best",
             )
 
@@ -88,7 +84,6 @@ def train(config_file):
                 val_results["val_loss"],
                 val_results["val_accuracy"],
                 config["checkpoint_dir"],
-                config["run_name"],
             )
     wandb.finish()
 

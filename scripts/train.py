@@ -50,8 +50,6 @@ def train(config_file):
     logger.info("Starting training...")
     for global_epoch in tqdm(range(last_epoch + 1, config["epochs"] + 1), desc="Epochs"):
 
-        model.sampler(sampler_config)
-        
         train_results = train_epoch(model, train_loader, optim, criterion, device, metrics, sampler_config)
         train_results["epoch"] = global_epoch
 

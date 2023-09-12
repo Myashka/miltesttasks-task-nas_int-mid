@@ -10,8 +10,9 @@ data:
 ### SAMPLER ###
 sampler_config:
   random: false
-  fixed_config: (1, 1) # только используется, если random: False
-  # batch_mode: true
+  fixed_config: # только используется, если random: False
+    - 1
+    - 1 
 
 ### MODEL ###
 model_config:

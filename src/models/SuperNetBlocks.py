@@ -44,37 +44,35 @@ class ConvBlock(nn.Module):
         return self.block(x)
 
 
-class VariableConvBlock(nn.Module):
-    """
-    Variable Convolutional Block which can have variable number of ConvBlock layers.
+class SubNet(nn.Module):
+    def __init__(self, supernetwork, layers_first, layers_second):
+        super(SubNet, self).__init__()
+        self.init_conv = supernetwork.init_conv
 
-    :param in_channels: Number of input channels
-    :type in_channels: int
-    :param out_channels: Number of output channels
-    :type out_channels: int
-    """
+        # Copy only the required layers
+        self.variable_block1 = nn.ModuleList(
+            supernetwork.variable_block1[:layers_first]
+        )
+        self.downsample_conv = supernetwork.downsample_conv
+        self.variable_block2 = nn.ModuleList(
+            supernetwork.variable_block2[:layers_second]
+        )
 
-    def __init__(self, in_channels, out_channels):
-        super(VariableConvBlock, self).__init__()
-        self.conv1 = ConvBlock(in_channels, out_channels)
-        self.conv2 = ConvBlock(out_channels, out_channels)
-        self.conv3 = ConvBlock(out_channels, out_channels)
+        self.global_avg_pool = supernetwork.global_avg_pool
+        self.fc = supernetwork.fc
 
-    def forward(self, x, num_layers):
-        """
-        Forward pass for the VariableConvBlock.
+    def forward(self, x):
+        x = self.init_conv(x)
 
-        :param x: Input tensor
-        :type x: torch.Tensor
-        :param num_layers: Number of ConvBlock layers to use (1 to 3)
-        :type num_layers: int
-        :rtype: torch.Tensor
-        :return: Output tensor after passing through the block
-        """
-        if num_layers >= 1:
-            x = self.conv1(x)
-        if num_layers >= 2:
-            x = self.conv2(x)
-        if num_layers == 3:
-            x = self.conv3(x)
+        for layer in self.variable_block1:
+            x = layer(x)
+
+        x = self.downsample_conv(x)
+
+        for layer in self.variable_block2:
+            x = layer(x)
+
+        x = self.global_avg_pool(x)
+        x = x.view(x.size(0), -1)
+        x = self.fc(x)
         return x

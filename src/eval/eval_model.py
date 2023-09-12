@@ -22,10 +22,12 @@ def eval_epoch(
     all_predictions = []
     all_targets = []
 
+    submodel = model.sampler(sampler_config)
+
     with torch.no_grad():
         for data, target in tqdm(dataloader, desc="Evaluating"):
             data, target = data.to(device), target.to(device)
-            logits = model(data)
+            logits = submodel(data)
             loss = criterion(logits, target)
             batch_size = data.size(0)
             total_loss += loss.item() * batch_size
@@ -38,8 +40,7 @@ def eval_epoch(
                 all_predictions.extend(predictions)
                 all_targets.extend(target.cpu().numpy())
 
-            if sampler_config and sampler_config.get("batch_mode", False):
-                model.sampler(sampler_config)
+            submodel = model.sampler(sampler_config)
 
     metric_results[f"{prefix}_loss"] = total_loss / total_samples
     for k, v in metric_results.items():

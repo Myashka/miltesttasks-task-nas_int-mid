@@ -14,7 +14,6 @@ data:
 sampler_config:
   random: true
   fixed_config: null # (2, 2)
-  batch_mode: true
 
 ### OPTIMIZER ###
 optimizer:

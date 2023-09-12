@@ -11,6 +11,7 @@ data:
 sampler_config:
   random: True
   fixed_config: (2, 2) # только используется, если random: False
+  batch_mode: True
 
 ### MODEL ###
 model_config:

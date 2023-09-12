@@ -1,7 +1,7 @@
 import torch
 from tqdm import tqdm
 from collections import defaultdict
-from src.metrics.compute_metrics import compute_metrics
+from src.utils.helper_functions import handle_sampler, accumulate_metrics
 
 
 def eval_epoch(
@@ -22,11 +22,10 @@ def eval_epoch(
     all_predictions = []
     all_targets = []
 
+    handle_sampler(model, sampler_config)
+
     with torch.no_grad():
-        for data, target in tqdm(
-            dataloader, position=1, desc="Evaluating", leave=False
-        ):
-            model.sampler(sampler_config)
+        for data, target in tqdm(dataloader, desc="Evaluating"):
             data, target = data.to(device), target.to(device)
             logits = model(data)
             loss = criterion(logits, target)
@@ -34,23 +33,18 @@ def eval_epoch(
             total_loss += loss.item() * batch_size
 
             if metrics:
-                metric_vals = compute_metrics(logits.cpu(), target.cpu(), metrics)
-                for metric_name, metric_value in metric_vals.items():
-                    metric_results[f"{prefix}_{metric_name}"] += (
-                        metric_value * batch_size
-                    )
+                metric_results = accumulate_metrics(logits, target, batch_size, metrics, metric_results, prefix)
 
             if return_outputs:
                 predictions = torch.argmax(logits, dim=1).cpu().numpy()
                 all_predictions.extend(predictions)
                 all_targets.extend(target.cpu().numpy())
 
-    metric_results[f"{prefix}_loss"] = total_loss / total_samples
-    if metrics:
-        for metric_name in metric_vals:
-            metric_results[f"{prefix}_{metric_name}"] /= total_samples
+            handle_sampler(model, sampler_config)
 
-    if return_outputs:
-        return metric_results, all_predictions, all_targets
-    else:
-        return metric_results
+    metric_results[f"{prefix}_loss"] = total_loss / total_samples
+    for k, v in metric_results.items():
+        if k != f"{prefix}_loss":
+            metric_results[k] = v / total_samples
+
+    return (metric_results, all_predictions, all_targets) if return_outputs else metric_results

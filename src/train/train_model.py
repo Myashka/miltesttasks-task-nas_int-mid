@@ -1,8 +1,7 @@
 from tqdm import tqdm
 from collections import defaultdict
 
-from src.metrics.compute_metrics import compute_metrics
-
+from src.utils.helper_functions import handle_sampler, accumulate_metrics
 
 def train_batch(model, data, target, optimizer, criterion, device):
     """
@@ -62,21 +61,21 @@ def train_epoch(
     metric_results = defaultdict(float)
     total_samples = len(dataloader.dataset)
 
-    for data, target in tqdm(
-        dataloader, position=1, desc="Training epoch", leave=False
-    ):
-        model.sampler(sampler_config)
+    handle_sampler(model, sampler_config)
+
+    for data, target in tqdm(dataloader, desc="Training epoch"):
         loss, logits = train_batch(model, data, target, optimizer, criterion, device)
         batch_size = data.size(0)
         total_loss += loss * batch_size
 
         if metrics:
-            metric_vals = compute_metrics(logits, target.cpu(), metrics)
-            for metric_name, metric_value in metric_vals.items():
-                metric_results[f"train_{metric_name}"] += metric_value * data.size(0)
+            metric_results = accumulate_metrics(logits, target, batch_size, metrics, metric_results)
+
+        handle_sampler(model, sampler_config)
 
     metric_results["train_loss"] = total_loss / total_samples
-    for metric_name in metric_vals:
-        metric_results[f"train_{metric_name}"] /= total_samples
+    for k, v in metric_results.items():
+        if k != "train_loss":
+            metric_results[k] = v / total_samples
 
     return metric_results

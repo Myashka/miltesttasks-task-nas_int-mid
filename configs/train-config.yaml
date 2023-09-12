@@ -2,25 +2,27 @@ seed: 42
 device: cuda
 epochs: 200
 save_interval: 20
-checkpoint_dir: /content/miltesttasks-task-nas_int-mid/artifacts/train/random_sampler
+checkpoint_dir: /content/miltesttasks-task-nas_int-mid/artifacts/train/from_scratch
 
 ### WANDB ###
 wandb:
-  project_name: mit-test
-  run_name: train-colab-200_epoches-bs_8192-AdamW_lr_3_03_w_d_0.01-random_sampler_each_batch-16_32_10
+  project_name: mil-test
+  run_name: train-layers_1_1-colab-200_epoches-bs_8192-AdamW_lr_3_03_w_d_0.01-from_scratch-16_32_10
   tags:
     - trian
 
 ### DATA ###
 data:
   train_batch_size: 8192
-  val_batch_size: 64
+  val_batch_size: 1024
   val_fraction: 0.15
 
 ### SAMPLER ###
 sampler_config:
-  random: true
-  fixed_config: null # (2, 2)
+  random: false
+  fixed_config: # (2, 2)
+    - 1
+    - 1
 
 ### OPTIMIZER ###
 optimizer:

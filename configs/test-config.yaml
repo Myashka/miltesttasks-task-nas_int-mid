@@ -3,14 +3,14 @@ device: cuda
 
 ### WANDB ###
 wandb:
-  project_name: mit-test
+  project_name: mil-test
   run_name: test-colab-AdamW_lr_3_03_w_d_0.01-random_sampler_batch-16_32_10-layers_3_3
   tags:
     - test
 
 ### DATA ###
 data:
-  test_batch_size: 64
+  test_batch_size: 1024
 
 ### SAMPLER ###
 sampler_config:

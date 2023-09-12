@@ -1,17 +1,17 @@
 seed: 42
 device: cuda
 
-run_name: train-test_run
+run_name: test-test_run
 
 ### DATA ###
 data:
-  test_batch_size: 512
+  test_batch_size: 64
 
 ### SAMPLER ###
 sampler_config:
-  random: true
-  fixed_config: (2, 2) # только используется, если random: False
-  batch_mode: true
+  random: false
+  fixed_config: (1, 1) # только используется, если random: False
+  # batch_mode: true
 
 ### MODEL ###
 model_config:

@@ -21,7 +21,8 @@ def load_model(config, device):
     if checkpoint_path and os.path.exists(checkpoint_path):
         checkpoint = torch.load(checkpoint_path, map_location=device)
         model.load_state_dict(checkpoint["model_state_dict"])
-        optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+        if optimizer:
+            optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 
         last_epoch = checkpoint.get("epoch", 0)
         best_val_accuracy = checkpoint.get("best_val_accuracy", 0.0)

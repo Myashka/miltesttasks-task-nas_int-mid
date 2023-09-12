@@ -22,8 +22,6 @@ def eval_epoch(
     all_predictions = []
     all_targets = []
 
-    model.sampler(sampler_config)
-
     with torch.no_grad():
         for data, target in tqdm(dataloader, desc="Evaluating"):
             data, target = data.to(device), target.to(device)

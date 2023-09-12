@@ -61,8 +61,6 @@ def train_epoch(
     metric_results = defaultdict(float)
     total_samples = len(dataloader.dataset)
 
-    model.sampler(sampler_config)
-
     for data, target in tqdm(dataloader, desc="Training epoch"):
         loss, logits = train_batch(model, data, target, optimizer, criterion, device)
         batch_size = data.size(0)

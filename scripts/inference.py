@@ -38,6 +38,7 @@ def inference(config_file, output_file):
     )
 
     sampler_config = config.get("sampler_config")
+    model.sampler(sampler_config)
 
     test_results, all_predictions, all_targets = eval_epoch(model, test_loader, criterion, device, metrics, prefix="test", sampler_config=sampler_config)
     wandb_log(test_results)

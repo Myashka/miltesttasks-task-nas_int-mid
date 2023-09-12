@@ -5,12 +5,13 @@ from src.eval.eval_model import eval_epoch
 from src.losses.CS_loss import CS_loss
 from src.metrics.accuracy import accuracy
 from src.utils import save_checkpoint, set_random_seed, load_config
-from src.logging.wandb_logging import wandb_log
+from src.logging import wandb_log, init_tracker
 
 import torch
 from tqdm import tqdm
 import click
 import wandb
+import os
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -25,12 +26,7 @@ def train(config_file):
 
     set_random_seed(config["seed"])
 
-    run = wandb.init(
-        project="mil-test",
-        tags=["trian"],
-        name=config["checkpoint_dir"].split("/")[-1],
-        config=config,
-    )
+    run = init_tracker(config)
     device = torch.device(f"{config['device']}" if torch.cuda.is_available() else "cpu")
     logger.info(f"Using device: {device}")
 
@@ -46,27 +42,44 @@ def train(config_file):
         val_batch_size=config["data"]["val_batch_size"],
         val_fraction=config["data"]["val_fraction"],
     )
-    
+
     logger.info("Starting training...")
-    for global_epoch in tqdm(range(last_epoch + 1, config["epochs"] + 1), desc="Epochs"):
-
-        train_results = train_epoch(model, train_loader, optim, criterion, device, metrics, sampler_config)
+    for global_epoch in tqdm(
+        range(last_epoch + 1, config["epochs"] + 1), desc="Epochs"
+    ):
+        train_results = train_epoch(
+            model, train_loader, optim, criterion, device, metrics, sampler_config
+        )
         train_results["epoch"] = global_epoch
-
-        if not sampler_config["batch_mode"]:
-            train_results["architecture"] = (model.layer_config[0] * 10 + model.layer_config[1])
         wandb_log(train_results)
 
-        val_results = eval_epoch(model, val_loader, criterion, device, metrics, sampler_config=sampler_config)
+        val_results = eval_epoch(
+            model, val_loader, criterion, device, metrics, sampler_config=sampler_config
+        )
         val_results["epoch"] = global_epoch
         wandb_log(val_results)
 
         if val_results["val_accuracy"] > best_val_accuracy:
             best_val_accuracy = val_results["val_accuracy"]
-            save_checkpoint(model, optim, global_epoch, val_results["val_loss"], best_val_accuracy, config["checkpoint_dir"], prefix="best")
+            save_checkpoint(
+                model,
+                optim,
+                global_epoch,
+                val_results["val_loss"],
+                best_val_accuracy,
+                os.path.join(config["checkpoint_dir"], config["wandb"]["run_name"]),
+                prefix="best",
+            )
 
         if global_epoch % config["save_interval"] == 0:
-            save_checkpoint(model, optim, global_epoch, val_results["val_loss"], val_results["val_accuracy"], config["checkpoint_dir"])
+            save_checkpoint(
+                model,
+                optim,
+                global_epoch,
+                val_results["val_loss"],
+                val_results["val_accuracy"],
+                os.path.join(config["checkpoint_dir"], config["wandb"]["run_name"]),
+            )
     wandb.finish()
 
 

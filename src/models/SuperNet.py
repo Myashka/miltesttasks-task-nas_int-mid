@@ -1,6 +1,7 @@
 import torch.nn as nn
 import random
-from .SuperNetBlocks import ConvBlock, SubNet
+from .SuperNetBlocks import ConvBlock
+from .SubNet import SubNet
 
 
 class SuperNet(nn.Module):

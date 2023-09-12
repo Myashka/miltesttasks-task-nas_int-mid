@@ -1,6 +1,5 @@
 import torch
 import pandas as pd
-import wandb
 import click
 
 from src.data.make_dataloaders import make_dataloaders
@@ -9,7 +8,7 @@ from src.eval.eval_model import eval_epoch
 from src.losses.CS_loss import CS_loss
 from src.metrics.accuracy import accuracy
 from src.utils import set_random_seed, load_config
-from src.logging.wandb_logging import wandb_log
+from src.logging import wandb_log, init_tracker
 
 
 @click.command()
@@ -22,20 +21,15 @@ def inference(config_file, run_name, layers_first, layers_second, output_file):
     config = load_config(config_file)
 
     if run_name:
-        config['run_name'] = run_name
+        config["wandb"]["run_name"] = run_name
     if layers_first:
-        config['sampler_config']["fixed_config"][0] = layers_first
+        config["sampler_config"]["fixed_config"][0] = layers_first
     if layers_second:
-        config['sampler_config']["fixed_config"][1] = layers_second
+        config["sampler_config"]["fixed_config"][1] = layers_second
 
     set_random_seed(config["seed"])
 
-    run = wandb.init(
-        project="mil-test",
-        tags=["test"],
-        name=config["run_name"],
-        config=config,
-    )
+    run = init_tracker(config)
     device = torch.device(f"{config['device']}" if torch.cuda.is_available() else "cpu")
 
     criterion = CS_loss()

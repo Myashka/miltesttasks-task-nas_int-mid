@@ -2,7 +2,14 @@ seed: 42
 device: cuda
 epochs: 200
 save_interval: 20
-checkpoint_dir: /content/miltesttasks-task-nas_int-mid/artifacts/train/random_sampler/train-colab-200_epoches-bs_8192-AdamW_lr_3_03_w_d_0.01-random_sampler_each_batch-16_32_10
+checkpoint_dir: /content/miltesttasks-task-nas_int-mid/artifacts/train/random_sampler
+
+### WANDB ###
+wandb:
+  project_name: mit-test
+  run_name: train-colab-200_epoches-bs_8192-AdamW_lr_3_03_w_d_0.01-random_sampler_each_batch-16_32_10
+  tags:
+    - trian
 
 ### DATA ###
 data:
@@ -17,7 +24,7 @@ sampler_config:
 
 ### OPTIMIZER ###
 optimizer:
-  name: AdamW # AdamW
+  name: AdamW # SGD
   params:
     lr: 3.0e-03
     # momentum: 0.9

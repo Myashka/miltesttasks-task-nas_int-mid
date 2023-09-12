@@ -33,9 +33,15 @@ def train_batch(model, data, target, optimizer, criterion, device):
     return loss.item(), logits.cpu().detach()
 
 def update_weights_in_supernet(supernet, subnet):
-    for name, module in supernet.named_children():
-        # if name in ['init_conv', 'variable_block1', 'downsample_conv', 'variable_block2', 'fc']:
-        module.load_state_dict(subnet.state_dict())
+    super_state = supernet.state_dict()
+    sub_state = subnet.state_dict()
+
+    for name, weight in sub_state.items():
+        if name in super_state:
+            super_state[name] = weight
+
+    supernet.load_state_dict(super_state)
+
 
 def train_epoch(
     model, dataloader, optimizer, criterion, device, metrics=None, sampler_config=None

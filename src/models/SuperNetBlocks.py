@@ -42,37 +42,3 @@ class ConvBlock(nn.Module):
         :return: Output tensor after passing through the block
         """
         return self.block(x)
-
-
-class SubNet(nn.Module):
-    def __init__(self, supernetwork, layers_first, layers_second):
-        super(SubNet, self).__init__()
-        self.init_conv = supernetwork.init_conv
-
-        # Copy only the required layers
-        self.variable_block1 = nn.ModuleList(
-            supernetwork.variable_block1[:layers_first]
-        )
-        self.downsample_conv = supernetwork.downsample_conv
-        self.variable_block2 = nn.ModuleList(
-            supernetwork.variable_block2[:layers_second]
-        )
-
-        self.global_avg_pool = supernetwork.global_avg_pool
-        self.fc = supernetwork.fc
-
-    def forward(self, x):
-        x = self.init_conv(x)
-
-        for layer in self.variable_block1:
-            x = layer(x)
-
-        x = self.downsample_conv(x)
-
-        for layer in self.variable_block2:
-            x = layer(x)
-
-        x = self.global_avg_pool(x)
-        x = x.view(x.size(0), -1)
-        x = self.fc(x)
-        return x

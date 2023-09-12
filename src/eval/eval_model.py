@@ -1,7 +1,7 @@
 import torch
 from tqdm import tqdm
 from collections import defaultdict
-from src.utils.helper_functions import handle_sampler, accumulate_metrics
+from src.utils.helper_functions import accumulate_metrics
 
 
 def eval_epoch(
@@ -22,7 +22,7 @@ def eval_epoch(
     all_predictions = []
     all_targets = []
 
-    handle_sampler(model, sampler_config)
+    model.sampler(sampler_config)
 
     with torch.no_grad():
         for data, target in tqdm(dataloader, desc="Evaluating"):
@@ -40,7 +40,8 @@ def eval_epoch(
                 all_predictions.extend(predictions)
                 all_targets.extend(target.cpu().numpy())
 
-            handle_sampler(model, sampler_config)
+            if sampler_config and sampler_config.get("batch_mode", False):
+                model.sampler(sampler_config)
 
     metric_results[f"{prefix}_loss"] = total_loss / total_samples
     for k, v in metric_results.items():

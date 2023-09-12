@@ -1,11 +1,5 @@
 from src.metrics.compute_metrics import compute_metrics
 
-
-def handle_sampler(model, sampler_config):
-    if sampler_config and sampler_config.get("batch_mode", False):
-        model.sampler(sampler_config)
-
-
 def accumulate_metrics(
     logits, target, batch_size, metrics, metric_results, prefix="train"
 ):

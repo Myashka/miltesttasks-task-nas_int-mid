@@ -12,9 +12,9 @@ data:
 
 ### SAMPLER ###
 sampler_config:
-  random: True
+  random: true
   fixed_config: null # (2, 2)
-  batch_mode: True
+  batch_mode: true
 
 ### OPTIMIZER ###
 optimizer:

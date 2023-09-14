@@ -33,6 +33,14 @@ def train_batch(model, data, target, optimizer, criterion, device):
     return loss.item(), logits.cpu().detach()
 
 def update_weights_in_supernet(supernet, subnet):
+    """
+    Update the weights of the supernet using the weights from the subnet.
+
+    :param supernet: The main model (SuperNet) whose weights need to be updated.
+    :type supernet: torch.nn.Module
+    :param subnet: The sub-model (SubNet) whose weights will be used for the update.
+    :type subnet: torch.nn.Module
+    """
     super_state = supernet.state_dict()
     sub_state = subnet.state_dict()
 
@@ -46,6 +54,28 @@ def update_weights_in_supernet(supernet, subnet):
 def train_epoch(
     model, dataloader, optimizer, criterion, device, metrics=None, sampler_config=None
 ):
+    """
+    Train a model for one epoch. This function processes all batches in the given dataloader, computes the loss, updates
+    the weights using the subnet's weights, and computes specified metrics.
+
+    :param model: Model to be trained.
+    :type model: torch.nn.Module
+    :param dataloader: DataLoader instance for the training dataset.
+    :type dataloader: torch.utils.data.DataLoader
+    :param optimizer: Optimizer to update the model's weights.
+    :type optimizer: torch.optim.Optimizer
+    :param criterion: Loss function.
+    :type criterion: callable
+    :param device: Device to which data should be loaded (e.g., 'cuda' or 'cpu').
+    :type device: str or torch.device
+    :param metrics: List of metric functions to compute during training. Default is None.
+    :type metrics: list or None
+    :param sampler_config: Configuration for model sampler. Default is None.
+    :type sampler_config: dict or None
+    
+    :rtype: dict
+    :return: A dictionary containing computed metrics for the training epoch.
+    """
     model.train()
     total_loss = 0.0
     metric_results = defaultdict(float)

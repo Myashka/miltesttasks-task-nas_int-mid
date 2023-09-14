@@ -2,6 +2,16 @@ import torch.nn as nn
 
 
 class SubNet(nn.Module):
+    """
+    A SubNet class derived from the given SuperNet. This class helps to instantiate a subset of the SuperNet based on the provided layers.
+
+    :param supernet: An instance of the SuperNet to derive layers from
+    :type supernet: nn.Module
+    :param layers_first: Number of layers to consider from the first variable block of the SuperNet
+    :type layers_first: int
+    :param layers_second: Number of layers to consider from the second variable block of the SuperNet
+    :type layers_second: int
+    """
     def __init__(self, supernet, layers_first, layers_second):
         super(SubNet, self).__init__()
         self.init_conv = supernet.init_conv
@@ -19,6 +29,14 @@ class SubNet(nn.Module):
         self.fc = supernet.fc
 
     def forward(self, x):
+        """
+        Forward pass of the SubNet.
+
+        :param x: Input tensor
+        :type x: torch.Tensor
+        :rtype: torch.Tensor
+        :return: Model's output tensor
+        """
         x = self.init_conv(x)
 
         for layer in self.variable_block1:

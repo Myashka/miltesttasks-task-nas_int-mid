@@ -6,6 +6,22 @@ from src.models.SuperNet import SuperNet
 
 
 def load_model(config, device):
+    """
+    Load a SuperNet model along with its optimizer, if specified. The function also handles the loading of the model's state 
+    from a checkpoint if a path is provided and the checkpoint exists.
+
+    :param config: Configuration dictionary containing model and optimizer details.
+    :type config: dict
+    :param device: Device to which the model should be loaded (e.g., 'cuda' or 'cpu').
+    :type device: str or torch.device
+
+    :rtype: tuple
+    :return: A tuple containing the following:
+             - model: Loaded SuperNet model.
+             - optimizer: Loaded optimizer if specified, otherwise None.
+             - last_epoch: The last epoch number from the checkpoint or 0 if not available.
+             - best_val_accuracy: The best validation accuracy from the checkpoint or 0.0 if not available.
+    """
     model = SuperNet(config.get("model_config"))
     model.to(device)
 

@@ -15,10 +15,8 @@ class SuperNet(nn.Module):
     def __init__(self, config):
         super(SuperNet, self).__init__()
 
-        # Initial Conv
         self.init_conv = ConvBlock(**config["init_conv"])
         
-        # Variable Blocks as lists
         self.variable_block1 = nn.ModuleList([
             ConvBlock(**config["variable_block1"]),
             ConvBlock(**config["variable_block1"]),
